@@ -1,0 +1,140 @@
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <title>Speech Recognizer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="html5 speech recognizer">
+    <meta name="description" content="Speech Recognizer Chrome App">
+    <link href="bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="bootstrap-responsive.min.css" rel="stylesheet">
+		<link href="css/font-awesome.css" rel="stylesheet">
+		<link href="bootstrap-wysiwyg.css" rel="stylesheet">
+    <style type="text/css">
+    .rowSelectable:hover {
+      background-color: #ddd;
+      cursor: pointer;
+    }
+    </style>
+    <script src="jquery.min.js"></script>
+    <script src="bootstrap-wysiwyg.js"></script>
+    <script src="jquery.hotkeys.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="prettify.js"></script>
+  </head>
+  <body style="zoom: 1; background-color: rgb(238, 238, 238);">
+    <div class="container">
+      <div class="hero-unit" style="padding-top:10px;">
+        <h2>Speech Recognizer <small id="noteTitle">default note</small></h2>
+        <div class="btn-toolbar" data-role="editor-toolbar" data-target="#editor">
+          <div class="btn-group">
+            <a class="btn" id="createFile" data-edit="new" title="" href="#createFileModal" data-toggle="modal" data-original-title="New (Ctrl/Cmd+N)"><i class="icon-file"></i></a>
+            <a class="btn" id="openFile" data-edit="open" title="" href="#openFileModal" data-toggle="modal" data-original-title="Open (Ctrl/Cmd+O)"><i class="icon-folder-open"></i></a>
+            <a class="btn" id="saveFile" data-edit="save" title="" data-original-title="Save (Ctrl/Cmd+S)"><i class="icon-download-alt"></i></a>
+          </div>
+          <div class="btn-group">
+            <a class="btn dropdown-toggle" data-toggle="dropdown" title="" data-original-title="Font"><i class="icon-font"></i><b class="caret"></b></a>
+            <ul class="dropdown-menu">
+              <li><a data-edit="fontName Serif" style="font-family:'Serif'">Serif</a></li><li><a data-edit="fontName Sans" style="font-family:'Sans'">Sans</a></li><li><a data-edit="fontName Arial" style="font-family:'Arial'">Arial</a></li><li><a data-edit="fontName Arial Black" style="font-family:'Arial Black'">Arial Black</a></li><li><a data-edit="fontName Courier" style="font-family:'Courier'">Courier</a></li><li><a data-edit="fontName Courier New" style="font-family:'Courier New'">Courier New</a></li><li><a data-edit="fontName Comic Sans MS" style="font-family:'Comic Sans MS'">Comic Sans MS</a></li><li><a data-edit="fontName Helvetica" style="font-family:'Helvetica'">Helvetica</a></li><li><a data-edit="fontName Impact" style="font-family:'Impact'">Impact</a></li><li><a data-edit="fontName Lucida Grande" style="font-family:'Lucida Grande'">Lucida Grande</a></li><li><a data-edit="fontName Lucida Sans" style="font-family:'Lucida Sans'">Lucida Sans</a></li><li><a data-edit="fontName Tahoma" style="font-family:'Tahoma'">Tahoma</a></li><li><a data-edit="fontName Times" style="font-family:'Times'">Times</a></li><li><a data-edit="fontName Times New Roman" style="font-family:'Times New Roman'">Times New Roman</a></li><li><a data-edit="fontName Verdana" style="font-family:'Verdana'">Verdana</a></li></ul>
+            </div>
+            <div class="btn-group">
+              <a class="btn dropdown-toggle" data-toggle="dropdown" title="" data-original-title="Font Size"><i class="icon-text-height"></i>&nbsp;<b class="caret"></b></a>
+              <ul class="dropdown-menu">
+                <li><a data-edit="fontSize 5"><font size="5">Huge</font></a></li>
+                <li><a data-edit="fontSize 3"><font size="3">Normal</font></a></li>
+                <li><a data-edit="fontSize 1"><font size="1">Small</font></a></li>
+              </ul>
+            </div>
+            <div class="btn-group">
+              <a class="btn" data-edit="bold" title="" data-original-title="Bold (Ctrl/Cmd+B)"><i class="icon-bold"></i></a>
+              <a class="btn" data-edit="italic" title="" data-original-title="Italic (Ctrl/Cmd+I)"><i class="icon-italic"></i></a>
+              <a class="btn" data-edit="strikethrough" title="" data-original-title="Strikethrough"><i class="icon-strikethrough"></i></a>
+              <a class="btn" data-edit="underline" title="" data-original-title="Underline (Ctrl/Cmd+U)"><i class="icon-underline"></i></a>
+            </div>
+            <div class="btn-group">
+              <a class="btn" data-edit="insertunorderedlist" title="" data-original-title="Bullet list"><i class="icon-list-ul"></i></a>
+              <a class="btn" data-edit="insertorderedlist" title="" data-original-title="Number list"><i class="icon-list-ol"></i></a>
+              <a class="btn" data-edit="outdent" title="" data-original-title="Reduce indent (Shift+Tab)"><i class="icon-indent-left"></i></a>
+              <a class="btn" data-edit="indent" title="" data-original-title="Indent (Tab)"><i class="icon-indent-right"></i></a>
+            </div>
+            <div class="btn-group">
+              <a class="btn" data-edit="justifyleft" title="" data-original-title="Align Left (Ctrl/Cmd+L)"><i class="icon-align-left"></i></a>
+              <a class="btn" data-edit="justifycenter" title="" data-original-title="Center (Ctrl/Cmd+E)"><i class="icon-align-center"></i></a>
+              <a class="btn" data-edit="justifyright" title="" data-original-title="Align Right (Ctrl/Cmd+R)"><i class="icon-align-right"></i></a>
+              <a class="btn" data-edit="justifyfull" title="" data-original-title="Justify (Ctrl/Cmd+J)"><i class="icon-align-justify"></i></a>
+            </div>
+            <div class="btn-group">
+              <a class="btn dropdown-toggle" data-toggle="dropdown" title="" data-original-title="Hyperlink"><i class="icon-link"></i></a>
+              <div class="dropdown-menu input-append">
+               <input class="span2" placeholder="URL" type="text" data-edit="createLink">
+               <button class="btn" type="button">Add</button>
+             </div>
+             <a class="btn" data-edit="unlink" title="" data-original-title="Remove Hyperlink"><i class="icon-cut"></i></a>
+           </div>
+           <div class="btn-group">
+            <a class="btn" title="" id="pictureBtn" data-original-title="Insert picture (or just drag &amp; drop)"><i class="icon-picture"></i></a>
+            <input type="file" data-role="magic-overlay" data-target="#pictureBtn" data-edit="insertImage" style="opacity: 0; position: absolute; top: 0px; left: 0px; width: 37px; height: 30px;">
+          </div>
+          <div class="btn-group">
+            <a class="btn" data-edit="undo" title="" data-original-title="Undo (Ctrl/Cmd+Z)"><i class="icon-undo"></i></a>
+            <a class="btn" data-edit="redo" title="" data-original-title="Redo (Ctrl/Cmd+Y)"><i class="icon-repeat"></i></a>
+          </div>
+          <div class="btn-group">
+            <a class="btn" data-edit="settings" href="#settings" data-toggle="modal" title="" data-original-title="Settings"><i class="icon-cog"></i></a>
+          </div>
+          <input type="text" data-edit="inserttext" id="voiceBtn" x-webkit-speech="" style="position: absolute; top: 124px; left: 1431px;" lang="en-US">
+        </div>
+        <div id="editor" contenteditable="true"></div><br>
+        <div id="news" style="height:10px;">
+          <div style="float:left">
+            <a href="http://exzalt.co.in">© Exzalt</a> &nbsp; | &nbsp; <a href="http://exzalt.co.in/#contact-area">Support</a> &nbsp; | &nbsp; <a href="https://chrome.google.com/webstore/detail/speech-recognizer/aomjekmpappghadlogpigifkghlmebjk">Rate Me</a>
+          </div>
+          <div id="fb-div" style="float:right"><iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fwww.facebook.com%2Fexzalt&amp;send=false&amp;layout=standard&amp;width=300&amp;show_faces=true&amp;font&amp;colorscheme=light&amp;action=like&amp;height=80&amp;appId=138086856292147" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:300px; height:80px;" allowtransparency="true"></iframe></div>    
+        </div>
+      </div>
+    </div>
+    <div id="settings" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="settings" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Settings</h3>
+      </div>
+      <div class="modal-body">
+        <div class="btn-group">
+          <h5>Select Language</h5>
+          <select id="select_language" style="width:115px; margin-right:5px;">
+            <option value="0">Afrikaans</option><option value="1">Bahasa Indonesia</option><option value="2">Bahasa Melayu</option><option value="3">Català</option><option value="4">Ceština</option><option value="5">Deutsch</option><option value="6">English</option><option value="7">Español</option><option value="8">Euskara</option><option value="9">Français</option><option value="10">Galego</option><option value="11">Hrvatski</option><option value="12">IsiZulu</option><option value="13">Íslenska</option><option value="14">Italiano</option><option value="15">Magyar</option><option value="16">Nederlands</option><option value="17">Norsk bokmål</option><option value="18">Polski</option><option value="19">Português</option><option value="20">Româna</option><option value="21">Slovencina</option><option value="22">Suomi</option><option value="23">Svenska</option><option value="24">Türkçe</option><option value="25">?????????</option><option value="26">P??????</option><option value="27">??????</option><option value="28">???</option><option value="29">??</option><option value="30">???</option>
+          <option value="31">Lingua latina</option></select>
+          <select id="select_dialect" style="visibility: visible; width: 130px;">
+            
+          <option value="en-AU">Australia</option><option value="en-CA">Canada</option><option value="en-IN">India</option><option value="en-NZ">New Zealand</option><option value="en-ZA">South Africa</option><option value="en-GB">United Kingdom</option><option value="en-US">United States</option></select>
+        </div>
+      </div>
+    </div>
+    <div id="createFileModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="newFile" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">New Note</h3>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="fileName" placeholder="File Name">
+        <p style="color:red;display:none;" id="createError">File with this name already exists!</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        <button class="btn btn-primary" id="fileCreate">Create</button>
+      </div>
+    </div>
+    <div id="openFileModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="openFile" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3>Open Note</h3>
+      </div>
+      <div class="modal-body">
+        <table class="table" id="fileTable"></table>
+        
+      </div>
+      <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+      </div>
+    </div>
+    <script src="main.js"></script>
+  
+</body></html>

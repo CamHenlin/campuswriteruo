@@ -1,0 +1,6 @@
+
+SF--Text remains in speach box after writing
+SF--Assessment to highlighting?
+SF--Box around assesment
+SF--Video not squeeze fit
+SF--Article borders

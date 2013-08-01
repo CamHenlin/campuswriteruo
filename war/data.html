@@ -1,0 +1,80 @@
+<HTML>
+    <head>
+        <!--Hosted Libraries-->
+            <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+            
+            <!--jqueryui-->
+            <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+            <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+        
+            <!--Backbone-->
+            <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+            <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.10/backbone-min.js"></script>
+            
+        <!--Local Libraries-->
+        <script src="js/dataBackbone.js"></script>
+        <link rel="stylesheet" href="style/dataStyle.css" />
+        
+        
+        <script>
+            function grayOut(){
+                $(".essayChunk").css("background-color","#eeeeee");
+            }
+        </script>
+    
+        <script>
+            $(function() {
+                $( "#slider" ).slider({
+                    orientation: "vertical",
+                    value:10,
+                    min:0,
+                    max:10,
+                    step:1,
+                    slide: function(event, ui) {
+                        $("#amount").attr("value",ui.value).text(ui.value);
+                        essayView.render(ui.value);
+                        infoView.render(ui.value);
+                    }
+                });
+                $( "#amount" ).attr('value', $("#slider").slider("value"));
+            });
+        </script> 
+        
+    </head>
+    <body>
+         
+        <div id="slider" ></div>
+        
+        <div id="sliderContainer"></div>
+        
+        <div id="essayContainer">
+            <div id="essayText">a</div>
+        </div>
+        
+        <div id="infoContainer">
+            Info goes here
+        </div>
+
+        <!--Templates-->
+        <div id="essayTemplate" style="display:none;">
+            <span class="contain">
+                <span class="essayChunk"></span>
+            </span>
+        </div>
+        
+        <div id="infoTemplate" style="display:none;">
+            <div class="contain">
+                <h1 class="currentPosition"></h1><br />
+                <h2 class="answerBox"></h2>
+                <h2 class="timeBox"></h2>
+                <h2 class="keystrokeBox"></h2>
+            </div>
+        </div>
+    
+    
+    </body>
+    
+    
+    
+    
+<HTML>

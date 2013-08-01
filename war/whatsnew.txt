@@ -1,0 +1,4 @@
+draggable div forms now spread out as individual divs
+added voice recognition textarea input
+article view embed a website
+like note the draggable speech input?

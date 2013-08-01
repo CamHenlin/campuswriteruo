@@ -1,0 +1,56 @@
+#amount{
+    display:block;
+    color: #FFFFFF;
+    background-color: #0000FF;
+}
+
+#sliderContainer{
+     float:left;
+     text-align:center;
+     height:30%;
+     margin-top:10%;
+     margin-left:1%;
+     position:relative;
+}
+
+#slider{
+    top: 5%;
+    height:80%;
+    float:left;
+}
+
+#essayContainer{
+    float:left;
+    height:90%;
+    width: 70%;
+    border: 1px solid black;
+    margin-right: 5px;
+    margin-left: 5px;
+    margin-bottom: 5px;
+    margin-top:20px;
+    padding:5px;
+    overflow: auto;
+}
+
+#infoContainer{
+    float:left;
+    height:90%;
+    width:17%;
+    border: 1px solid black;
+    margin-right: 5px;
+    margin-left: 5px;
+    margin-bottom: 5px;
+    margin-top:20px;
+    padding:5px;
+    overflow:auto;
+}
+
+/*.essayChunkOverlay{
+    display:none;
+    background-color: black;
+    z-index:1001;
+    -moz-opacity: 0.8;
+    opacity:.80;
+    filter: alpha(opacity=80);
+}*/
+

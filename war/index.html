@@ -1,0 +1,293 @@
+<html>
+	<head>
+		<title>Writer</title>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.10/backbone-min.js"></script>
+
+		<!--rich text editor-->
+		<script src="js/lib/nicEditor.js" type="text/javascript"></script>
+		
+		<!--canvas-->
+		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+		<script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+		<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+
+        <!--CH-->
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $.ajax({
+                    type: 'POST',
+                    url: 'http://campuswriteruo.appspot.com/campuswriteruo',
+                    data: { "action" : "getLoginUrlOrUsername" },
+                    dataType: "json",
+                    cache: false,
+                    success: function (data) {
+                        if (data.isLoggedIn === "true") {
+                            console.log("logged in already");
+                            $('#start').prepend(data.username+"<br>");
+                        }
+                        else {
+                            $('#start').text("");
+                            $('#start').prepend("Please <a href="+data.loginUrl+">login</a><br><br>");
+                            $('#startButton').toggle();
+                        }
+                    }
+                });
+            });
+        </script>
+        <!--/CH-->
+        
+        <!--SF-->
+        <script>
+            function startUp(){
+            console.log("startButton")
+
+            $("#shade").fadeOut(500);
+            $("#start").fadeOut(500);
+            assessmentTimer = setTimeout(doAssessment,90000);
+            }
+        </script>
+        <script>
+            function endTest(){
+            console.log("endTest")
+            
+            $("#shade").fadeIn(500);
+            $("#end").fadeIn(500);
+            //switchVisibility("noteWindow");
+            $('.nicEdit-panelContain').toggle();
+            
+            }
+        </script>
+        <script>
+            function endView(){
+            $("#shade").fadeOut(500);
+            $("#end").fadeOut(500);
+            $('div').attr("contenteditable",'false');
+            }
+        </script>
+        
+        
+
+        <script src="js/assessment.js"></script>
+        <script src="js/choices.js"></script>
+
+        <script src="js/logger.js"></script>
+        <script src="js/caching.js"></script>
+		<script src="js/ajax.js"></script>
+        <script>
+        checkChange();
+        
+        
+
+        //setTimeout(doAssessment,2000);
+
+        </script>
+        <!--/SF-->
+      
+        <!-- backbone -->
+        <script type="text/javascript" src="js/views.js"></script>
+        
+        <link rel="stylesheet" type="text/css" href="style/theme.css" />
+        <script src="js/dropMenu.js"></script>
+		
+	</head>
+	<body>
+        <div id="testButtons" >
+            <button onclick="$('#shade').fadeIn(500); $('#start').fadeIn(500)">startup</button>
+            <button onclick="doAssessment();">assess</button>
+            <button onclick="seeCachedChoices();">console log choices</button>
+            <button onclick="endTest();">end test</button>
+            <button><a href="data.html" style="font-decoration:none;">see data</a></button>
+        </div>
+
+	
+		<script type="text/template" id="windowTemplate">
+			<div class="window" id="{windowName}">
+				
+			</div>
+		</script>
+		
+		<script type="text/template" id="noteWindowTemplate">
+			<div id='note'>
+                <h2 class='textBoxHeadline'>Notes</h2>
+            <div id='noteText' style="width: 700px; height: 100px;">This is a note</div>
+			</div>
+		</script>
+
+			
+		<!-- essay template -->
+		<script type="text/template" id="essayWindowTemplate">
+            <div id='essay'>
+                <h2 class='textBoxHeadline'>Essay</h2>
+                <div id='essayText' style="width: 700px; height: 100px;">This is an essay</div>
+            </div>
+		</script>
+
+		<script type="text/javascript">
+			var area = 
+			{
+				noteText: false,
+				essayText: false,
+			}
+			
+			// function to turn on/off the richtext div
+			function toggleTextArea(target) {
+				if(!area[target]) {
+						area[target] = new nicEditor({buttonList : ['bold','italic','underline','left','center','right','justify','ol','ul']}).panelInstance(target,{hasPanel : true});
+				} else {
+						area[target].removeInstance(target);
+						area[target] = null;
+				}
+			}
+			
+			// 'windows' and other globals
+			var windowsDisplayed = new Array();
+			
+			var windows = 
+			{
+				note : { display : false, element : null, name : "noteWindow" },
+				essay : { display : false, element : null, name : "essayWindow" },
+			};
+	
+			// document loaded
+			$(document).ready(function() {
+				windows.note.element = new WindowView({ el: $("#main"), windowName: "noteWindow" });
+				windows.essay.element = new WindowView({ el: $("#main"), windowName: "essayWindow" });
+				
+				new NoteView({ el: $("#noteWindow") });
+				new EssayView({ el: $("#essayWindow") });
+				
+			});
+			
+			var windowClicked;
+			var lastWindowClicked;
+			var visibleArray = new Array();
+
+            // change visibility of an element. 
+			function switchVisibility(target) {
+				console.log("switchVisibility" + visibleArray.length);
+				
+				$('#' + target).toggle();
+				
+				if (visibleArray.length == 0){
+					visibleArray.push(target);
+					windows[target.replace(/Window/g, '')].display = true;
+				}else if (visibleArray.length == 1){
+					if (windows[target.replace(/Window/g, '')].display == true){
+						visibleArray.splice(visibleArray.indexOf(target), 1);
+						windows[target.replace(/Window/g, '')].display = false;
+					}else{
+						visibleArray.push(target);
+						windows[target.replace(/Window/g, '')].display = true;
+					}
+				}else if (visibleArray.length == 2){
+					if (windows[target.replace(/Window/g, '')].display == true){
+						visibleArray.splice(visibleArray.indexOf(target), 1);
+						windows[target.replace(/Window/g, '')].display = false;
+					}else{
+						$('#' + visibleArray[0]).toggle();
+						var temp = visibleArray.shift();
+						windows[temp.replace(/Window/g, '')].display = false;
+						visibleArray.push(target);
+						windows[target.replace(/Window/g, '')].display = true;
+					}
+				}
+				
+				
+				$('#' + target).css("float", "left");
+				$('#' + target).css("width", "700px");
+				
+				adjustWindowsSize();
+				
+				console.log(visibleArray);
+			}
+
+		
+					
+			function adjustWindowsSize() {
+                //window size is the whole document - the left and right tabs
+                //magic number makes windows actually fit
+                //TODO: REMOVE MAGIC NUMBER
+                var size = $(window).width() - 100;
+                $("#main").width(size + 20);
+                size = (size)/visibleArray.length; // all n windows needs to have 1/n of the space
+                textAreaSize = (size - 2).toString() + "px"; // size for nicEditors
+                size = size.toString() + "px"; // reassigning the style takes a string
+                
+                for (i = 0; i < visibleArray.length; i++){
+                    if (i == 0) {
+                        $('#' + visibleArray[i]).css("float", "left");
+                    }
+                    else {
+                        $('#' + visibleArray[i]).css("float", "right");
+                    }
+                    $('#' + visibleArray[i]).css("width", size);
+                }
+                $("#essayText").css("width", textAreaSize);
+                $("#noteText").css("width", textAreaSize);
+                toggleTextArea("essayText");
+                toggleTextArea("essayText");
+                toggleTextArea("noteText");
+                toggleTextArea("noteText");
+			}
+			
+            window.onresize = adjustWindowsSize;
+			
+			function checkVisibility(target) {
+				return windows[target.replace(/Window/g, '')].display;
+			}
+			
+        </script>
+		
+        
+		<h1 id='prompt'>Write about Eugene, Oregon</h1>
+		<div id="main" style="width: 1600px; margin-left: 60px; height: 900px; align: center; float: center; border-color: black; border-width: 1px; border-style: dotted;"></div>
+
+        <div id="shade" class="black_overlay" style="display:block;"></div>
+        
+        <div id="menu" class="white_content">
+            <h1>What are you doing right now?</h1>
+            <ul id="jsddm">
+            </ul>
+        </div>
+        
+        <!--Start and Stop popup-->
+        <div id="start" class="white_content" style="display:block;">
+            Please wait for your instructor's permission to begin writing.
+            <br>  
+            <br>
+            <button id="startButton" onclick="startUp();"> Click here to start! </button>
+        </div>
+        
+        <div id="end" class="white_content">
+            <div id="endNote">You have used your allotted amount of time. Please inform an instructor that you have finished.</div>
+            <br />
+            <button id="viewEssay" onclick="endView();" style="align:center;">View Essay</button>
+        </div>
+
+        <div id="menuTemplate" style="display:none;">
+            
+                <li><a class="firstLevel" href="#"></a>
+                    <ul>
+                        <li><a href="#" onclick="chooseOption(this);" class="sub0"></a></li>
+                        <li><a href="#" onclick="chooseOption(this);" class="sub1"></a></li>
+                        <li><a href="#" onclick="chooseOption(this);" class="sub2"></a></li>
+                        <li><a href="#" onclick="chooseOption(this);" class="sub3"></a></li>
+                        <li><a href="#" onclick="chooseOption(this);" class="sub4"></a></li>
+                    </ul>
+                </li>
+            
+        </div>
+                        
+        
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                log = new setupKeyloggers();
+                switchVisibility("noteWindow");
+                switchVisibility("essayWindow");
+            })
+        </script>
+	</body>
+</html>
